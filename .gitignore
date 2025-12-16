@@ -15,11 +15,17 @@
 *.log
 
 # IDE/user artifacts
-/.vs/
-/.vscode/
 *.user
 *.suo
 *.aps
+
+# Visual Studio
+.vs/
+*.VC.db
+*.VC.opendb
+
+# Visual Studio Code
+.vscode/
 
 # Third-party / large assets (must be downloaded separately)
 /external/
