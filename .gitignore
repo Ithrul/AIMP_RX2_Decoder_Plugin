@@ -1,23 +1,6 @@
-# Keep source tracked; ignore everything else that is generated or third-party.
-
-# Build output
-/build/
-/out/
-/CMakeFiles/
-/CMakeCache.txt
-*.obj
-*.pdb
-*.ilk
-*.lib
-*.exp
-*.dll
-*.exe
-*.log
-
-# IDE/user artifacts
-*.user
-*.suo
-*.aps
+# ==============================
+# IDEs
+# ==============================
 
 # Visual Studio
 .vs/
@@ -27,13 +10,65 @@
 # Visual Studio Code
 .vscode/
 
-# Third-party / large assets (must be downloaded separately)
-/external/
-/test/
+# ==============================
+# CMake / build output
+# ==============================
 
+build/
+build-*/
+out/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
 
-# Packages / archives
+# ==============================
+# Visual Studio generated files
+# ==============================
+
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.vcxproj.*.user
+
+# ==============================
+# Binaries / artifacts
+# ==============================
+
+*.dll
+*.exe
+*.pdb
+*.lib
+*.exp
+
+# ==============================
+# Archives
+# ==============================
+
 *.zip
 *.7z
-*.tar
-*.gz
+*.rar
+
+# ==============================
+# Logs / temp
+# ==============================
+
+*.log
+*.tmp
+*.bak
+
+# ==============================
+# SDK folders (user-provided)
+# ==============================
+
+external/AIMP_SDK/
+external/REX_SDK/
+
+# ==============================
+# OS noise
+# ==============================
+
+.DS_Store
+Thumbs.db
