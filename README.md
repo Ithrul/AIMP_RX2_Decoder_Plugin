@@ -1,6 +1,6 @@
 # AIMP RX2 Decoder Plugin
 
-A Windows plugin that adds playback support for REX / RX2 / RCY loop files in AIMP by bridging the official REX Shared Library.
+An input plugin for the Windows version of AIMP that adds playback support for REX / RX2 / RCY loop files using the official REX Shared Library.
 
 ## Features
 - REX-family input plugin for AIMP with slice-aware playback and correct musical timing.
