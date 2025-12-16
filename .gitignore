@@ -1,0 +1,33 @@
+# Keep source tracked; ignore everything else that is generated or third-party.
+
+# Build output
+/build/
+/out/
+/CMakeFiles/
+/CMakeCache.txt
+*.obj
+*.pdb
+*.ilk
+*.lib
+*.exp
+*.dll
+*.exe
+*.log
+
+# IDE/user artifacts
+/.vs/
+/.vscode/
+*.user
+*.suo
+*.aps
+
+# Third-party / large assets (must be downloaded separately)
+/external/
+/test/
+
+
+# Packages / archives
+*.zip
+*.7z
+*.tar
+*.gz

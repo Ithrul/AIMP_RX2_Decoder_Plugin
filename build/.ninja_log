@@ -1,0 +1,15 @@
+# ninja log v6
+1316	40696	7874440144101537	E:/Documents/GitHub/aimp-rx2-plugin/out/lib/x64/Debug/aimp_rx2_plugin.lib	4efff836b6a0a384
+37	6382	7876217675011782	E:/Documents/GitHub/aimp-rx2-plugin/out/bin/x64/Release/aimp_rx2_plugin.dll	54841fa448c23a6f
+59	554	7876203504505367	CMakeFiles/aimp_rx2_plugin.dir/src/Rx2FileFormatExtension.cpp.obj	d72e683947f7dda3
+40	655	7876203504315370	CMakeFiles/aimp_rx2_plugin.dir/src/plugin.cpp.obj	817fa61de55c17f7
+47	1000	7876203504385361	CMakeFiles/aimp_rx2_plugin.dir/src/Rx2Decoder.cpp.obj	487a9556c4270ceb
+37	6382	7876217675011782	E:/Documents/GitHub/aimp-rx2-plugin/out/lib/x64/Release/aimp_rx2_plugin.lib	54841fa448c23a6f
+53	910	7876203504445378	CMakeFiles/aimp_rx2_plugin.dir/src/Rx2DecoderExtension.cpp.obj	b48cc27bd3ef9fa7
+1316	40696	7874440144101537	E:/Documents/GitHub/aimp-rx2-plugin/out/bin/x64/Debug/aimp_rx2_plugin.dll	4efff836b6a0a384
+380	60089	7876202564715989	E:/Documents/GitHub/aimp-rx2-plugin/out/bin/x86/Release/aimp_rx2_plugin.dll	23814e793cb7e9df
+380	60089	7876202564715989	E:/Documents/GitHub/aimp-rx2-plugin/out/lib/x86/Release/aimp_rx2_plugin.lib	23814e793cb7e9df
+31	490	7876238537597559	build.ninja	4b340c5ad63e317f
+31	490	7876238537528364	E:/Documents/GitHub/aimp-rx2-plugin/build/cmake_install.cmake	4b340c5ad63e317f
+66	410	7876203504565367	CMakeFiles/aimp_rx2_plugin.dir/src/version.rc.res	2aea242121432cff
+73	638	7876203504645385	CMakeFiles/aimp_rx2_plugin.dir/external/rex_sdk/REX.c.obj	1e483e51d763fcd7

@@ -1,0 +1,13 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "dll",
+      "exe": "",
+      "project": "CMakeLists.txt",
+      "projectTarget": "aimp_rx2_plugin.dll",
+      "name": "aimp_rx2_plugin.dll"
+    }
+  ]
+}

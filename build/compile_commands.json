@@ -1,0 +1,38 @@
+[
+{
+  "directory": "E:/Documents/GitHub/aimp-rx2-plugin/build",
+  "command": "C:\\PROGRA~1\\MIB055~1\\18\\COMMUN~1\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DREX_DLL_LOADER=1 -DREX_WINDOWS=1 -Daimp_rx2_plugin_EXPORTS -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\AIMP_SDK\\Sources\\Cpp -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\REX_SDK -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\src /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /FoCMakeFiles\\aimp_rx2_plugin.dir\\src\\plugin.cpp.obj /FdCMakeFiles\\aimp_rx2_plugin.dir\\ /FS -c E:\\Documents\\GitHub\\aimp-rx2-plugin\\src\\plugin.cpp",
+  "file": "E:/Documents/GitHub/aimp-rx2-plugin/src/plugin.cpp",
+  "output": "E:/Documents/GitHub/aimp-rx2-plugin/build/CMakeFiles/aimp_rx2_plugin.dir/src/plugin.cpp.obj"
+},
+{
+  "directory": "E:/Documents/GitHub/aimp-rx2-plugin/build",
+  "command": "C:\\PROGRA~1\\MIB055~1\\18\\COMMUN~1\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DREX_DLL_LOADER=1 -DREX_WINDOWS=1 -Daimp_rx2_plugin_EXPORTS -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\AIMP_SDK\\Sources\\Cpp -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\REX_SDK -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\src /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /FoCMakeFiles\\aimp_rx2_plugin.dir\\src\\Rx2Decoder.cpp.obj /FdCMakeFiles\\aimp_rx2_plugin.dir\\ /FS -c E:\\Documents\\GitHub\\aimp-rx2-plugin\\src\\Rx2Decoder.cpp",
+  "file": "E:/Documents/GitHub/aimp-rx2-plugin/src/Rx2Decoder.cpp",
+  "output": "E:/Documents/GitHub/aimp-rx2-plugin/build/CMakeFiles/aimp_rx2_plugin.dir/src/Rx2Decoder.cpp.obj"
+},
+{
+  "directory": "E:/Documents/GitHub/aimp-rx2-plugin/build",
+  "command": "C:\\PROGRA~1\\MIB055~1\\18\\COMMUN~1\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DREX_DLL_LOADER=1 -DREX_WINDOWS=1 -Daimp_rx2_plugin_EXPORTS -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\AIMP_SDK\\Sources\\Cpp -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\REX_SDK -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\src /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /FoCMakeFiles\\aimp_rx2_plugin.dir\\src\\Rx2DecoderExtension.cpp.obj /FdCMakeFiles\\aimp_rx2_plugin.dir\\ /FS -c E:\\Documents\\GitHub\\aimp-rx2-plugin\\src\\Rx2DecoderExtension.cpp",
+  "file": "E:/Documents/GitHub/aimp-rx2-plugin/src/Rx2DecoderExtension.cpp",
+  "output": "E:/Documents/GitHub/aimp-rx2-plugin/build/CMakeFiles/aimp_rx2_plugin.dir/src/Rx2DecoderExtension.cpp.obj"
+},
+{
+  "directory": "E:/Documents/GitHub/aimp-rx2-plugin/build",
+  "command": "C:\\PROGRA~1\\MIB055~1\\18\\COMMUN~1\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DREX_DLL_LOADER=1 -DREX_WINDOWS=1 -Daimp_rx2_plugin_EXPORTS -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\AIMP_SDK\\Sources\\Cpp -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\REX_SDK -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\src /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /FoCMakeFiles\\aimp_rx2_plugin.dir\\src\\Rx2FileFormatExtension.cpp.obj /FdCMakeFiles\\aimp_rx2_plugin.dir\\ /FS -c E:\\Documents\\GitHub\\aimp-rx2-plugin\\src\\Rx2FileFormatExtension.cpp",
+  "file": "E:/Documents/GitHub/aimp-rx2-plugin/src/Rx2FileFormatExtension.cpp",
+  "output": "E:/Documents/GitHub/aimp-rx2-plugin/build/CMakeFiles/aimp_rx2_plugin.dir/src/Rx2FileFormatExtension.cpp.obj"
+},
+{
+  "directory": "E:/Documents/GitHub/aimp-rx2-plugin/build",
+  "command": "C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe -DREX_DLL_LOADER=1 -DREX_WINDOWS=1 -Daimp_rx2_plugin_EXPORTS -I E:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\AIMP_SDK\\Sources\\Cpp -I E:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\REX_SDK -I E:\\Documents\\GitHub\\aimp-rx2-plugin\\src -DWIN32 /fo CMakeFiles\\aimp_rx2_plugin.dir\\src\\version.rc.res E:\\Documents\\GitHub\\aimp-rx2-plugin\\src\\version.rc",
+  "file": "E:/Documents/GitHub/aimp-rx2-plugin/src/version.rc",
+  "output": "E:/Documents/GitHub/aimp-rx2-plugin/build/CMakeFiles/aimp_rx2_plugin.dir/src/version.rc.res"
+},
+{
+  "directory": "E:/Documents/GitHub/aimp-rx2-plugin/build",
+  "command": "C:\\PROGRA~1\\MIB055~1\\18\\COMMUN~1\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo -DREX_DLL_LOADER=1 -DREX_WINDOWS=1 -Daimp_rx2_plugin_EXPORTS -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\AIMP_SDK\\Sources\\Cpp -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\REX_SDK -IE:\\Documents\\GitHub\\aimp-rx2-plugin\\src -TC /DWIN32 /D_WINDOWS /O2 /Ob2 /DNDEBUG -MD /FoCMakeFiles\\aimp_rx2_plugin.dir\\external\\REX_SDK\\REX.c.obj /FdCMakeFiles\\aimp_rx2_plugin.dir\\ /FS -c E:\\Documents\\GitHub\\aimp-rx2-plugin\\external\\REX_SDK\\REX.c",
+  "file": "E:/Documents/GitHub/aimp-rx2-plugin/external/REX_SDK/REX.c",
+  "output": "E:/Documents/GitHub/aimp-rx2-plugin/build/CMakeFiles/aimp_rx2_plugin.dir/external/REX_SDK/REX.c.obj"
+}
+]
