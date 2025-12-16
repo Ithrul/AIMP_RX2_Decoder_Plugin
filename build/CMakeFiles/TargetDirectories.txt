@@ -1,3 +1,0 @@
-E:/Documents/GitHub/aimp-rx2-plugin/build/CMakeFiles/aimp_rx2_plugin.dir
-E:/Documents/GitHub/aimp-rx2-plugin/build/CMakeFiles/edit_cache.dir
-E:/Documents/GitHub/aimp-rx2-plugin/build/CMakeFiles/rebuild_cache.dir
