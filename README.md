@@ -14,7 +14,7 @@ An input plugin for the Windows version of AIMP that adds playback support for R
 - Gracefully handles invalid files.
 
 ## Requirements
-- **AIMP** (tested with current Windows builds and AIMP 5.40). Download: https://www.aimp.ru/
+- **AIMP** (tested with current Windows builds and AIMP 5.40). Download: https://www.aimp.ru/?do=download&os=windows
 - **AIMP SDK** (not included). Download from AIMP: https://www.aimp.ru/?do=download&os=windows&cat=sdk and unpack into `external/AIMP_SDK/`. 
 - **REX SDK + REX Shared Library** (not included). Download from Reason Studios: https://www.reasonstudios.com/developer/rex-sdk  
   Place the SDK contents (including the `REX Shared Library.dll`) under `external/REX_SDK/`, keeping the directory layout expected by the SDK. x64 requires REX 1.7+ (e.g., 1.9.x). For 32-bit builds you must supply a legally obtained x86 REX Shared Library compatible with your license.
