@@ -40,7 +40,7 @@ This project is released under the MIT License **for the original source code on
 
 This project depends on third-party SDKs that are **not included** and are licensed separately:
 - AIMP SDK — © AIMP Dev Team
-- REX SDK / REX Shared Library — © Reason Studios AB
+- REX SDK / REX Shared Library — © Reason Studios AB (The Reason REX SDK license text is included in this repository for reference).
 
 The MIT License does **not** apply to these SDKs or to any binaries provided by them.
 Users must obtain and use the REX SDK in accordance with the Reason Studios
