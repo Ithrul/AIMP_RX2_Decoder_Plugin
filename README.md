@@ -4,7 +4,7 @@ An input plugin for the Windows version of AIMP that adds playback support for R
 
 ## Features
 - REX-family input plugin for AIMP with slice-aware playback and correct musical timing.
-- Supports RX2 / REX / RCY files.
+- Supports RX2 / REX / RCY loop files.
 - Slice-aware playback (muted / locked / timed slices).
 - Handles BPM, time signature, and bar-length metadata.
 - Musical-length-based looping for accurate repetition.
@@ -14,34 +14,68 @@ An input plugin for the Windows version of AIMP that adds playback support for R
 - Gracefully handles invalid files.
 
 ## Requirements
-- **AIMP** (tested with current Windows builds and AIMP 5.40). Download: https://www.aimp.ru/?do=download&os=windows
-- **AIMP SDK** (not included). Download from AIMP: https://www.aimp.ru/?do=download&os=windows&cat=sdk and unpack into `external/AIMP_SDK/`. 
-- **REX SDK + REX Shared Library** (not included). Download from Reason Studios: https://www.reasonstudios.com/developer/rex-sdk  
-  Place the SDK contents (including the `REX Shared Library.dll`) under `external/REX_SDK/`, keeping the directory layout expected by the SDK. x64 requires REX 1.7+ (e.g., 1.9.x). For 32-bit builds you must supply a legally obtained x86 REX Shared Library compatible with your license.
-- **Visual Studio** with C++ and CMake, or any Windows toolchain that can build CMake projects.
+- **AIMP** (tested with current Windows builds and AIMP 5.40).  
+  Download: https://www.aimp.ru/?do=download&os=windows
+- **AIMP SDK** (not included).  
+  Download from AIMP: https://www.aimp.ru/?do=download&os=windows&cat=sdk  
+  Unpack into `external/AIMP_SDK/`.
+- **REX SDK (headers)** (not included).  
+  Download from Reason Studios: https://www.reasonstudios.com/developer/rex-sdk  
+  This project is built against REX SDK **1.9.2** headers.
+- **REX Shared Library.dll** (not included in source repository).  
+  Any version **1.7 or newer** is compatible for building and runtime use, without
+  requiring version-specific workarounds.
+
+  For convenience, the official release packages bundle the following versions:
+  - **x64:** REX Shared Library.dll from REX SDK 1.9.2
+  - **x86:** REX Shared Library.dll v1.8.1 (last available 32-bit build, provided by Reason Studios after request)
+
+  When building from source, place the DLLs under `external/REX_DLLS/`:
+  - `external/REX_DLLS/x64/REX Shared Library.dll`
+  - `external/REX_DLLS/x86/REX Shared Library.dll`
+
+- **Visual Studio** with C++ and CMake, or any Windows toolchain capable of building CMake projects.
 
 ## Building
-1) Ensure the SDK folders exist:
-   - `external/AIMP_SDK/` containing the AIMP SDK headers/libs.
-   - `external/REX_SDK/` containing the REX SDK (including `Win/x64/Deployment/REX Shared Library.dll`).
-2) Configure with CMake (example):
+The `external/` folder is expected to contain `AIMP_SDK`, `REX_SDK`, and `REX_DLLS`.
+
+1. Ensure the external folders exist:
+   - `external/AIMP_SDK/` containing the AIMP SDK headers and libraries.
+   - `external/REX_SDK/` containing the REX SDK headers (1.9.2).
+   - `external/REX_DLLS/` containing architecture-matching `REX Shared Library.dll` files
+     (any version 1.7+).
+2. Configure and build with CMake (example):
    ```powershell
    cmake -S . -B build -A x64
    cmake --build build --config Release
    ```
-3) Copy the produced `aimp_rx2_plugin.dll` (and a matching `REX Shared Library.dll` if not already provided by the user's system) into your AIMP plugins folder.
+Copy the produced aimp_rx2_plugin.dll and the matching REX Shared Library.dll
+(same architecture) into your AIMP plugins folder.
 
-4) There is commented out packaging scripts in CMakeLists.txt and 'tools/' folder which creates install ready zip of plugin and copies REX Shared Library.dll from your local SDK installation; ensure you comply with the Reason/REX SDK license terms for any redistribution.
+To create the install-ready ZIP package:
+```powershell
+cmake --build build --config Release --target make_plugin_zip
+```
+You can also enable automatic packaging by configuring with
+`-DAIMP_AUTO_PACKAGE=ON`.
 
-## License
-This project is released under the MIT License **for the original source code only**. See `LICENSE` for details.
+Packaging and auto-deploy helper scripts (disabled by default) are available in
+CMakeLists.txt and the tools/ folder. These scripts can generate an install-ready
+ZIP package and copy the appropriate REX Shared Library.dll from REX_DLLS based on
+architecture. Ensure you comply with the Reason Studios / REX SDK license terms for
+any redistribution.
 
-## Third-party licenses
+License
+This project is released under the MIT License for the original source code only.
+See LICENSE for details.
 
-This project depends on third-party SDKs that are **not included** and are licensed separately:
-- AIMP SDK — © AIMP Dev Team
-- REX SDK / REX Shared Library — © Reason Studios AB (The Reason REX SDK license text is included in this repository for reference).
+Third-party licenses
+This project depends on third-party SDKs that are not included and are licensed separately:
 
-The MIT License does **not** apply to these SDKs or to any binaries provided by them.
-Users must obtain and use the REX SDK in accordance with the Reason Studios
-General License Agreement.
+AIMP SDK © AIMP Dev Team
+
+REX SDK / REX Shared Library © Reason Studios AB
+
+The MIT License does not apply to these SDKs or to any binaries provided by them.
+Users must obtain and use the REX SDK and REX Shared Library in accordance with the
+Reason Studios General License Agreement.

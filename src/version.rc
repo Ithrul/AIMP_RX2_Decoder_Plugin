@@ -2,8 +2,8 @@
 
 // Embedded version info for Windows file properties.
 // Keep in sync with plugin.cpp (fullDesc/version strings).
-#define VER_FILEVERSION             0,9,6,0
-#define VER_FILEVERSION_STR         "0.9.6"
+#define VER_FILEVERSION             0,9,7,0
+#define VER_FILEVERSION_STR         "0.9.7"
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION     VER_FILEVERSION
@@ -30,7 +30,7 @@ BEGIN
             VALUE "ProductName",      "AIMP RX2 Decoder Plugin"
             VALUE "ProductVersion",   VER_FILEVERSION_STR
             VALUE "Comments",         "REX-family input plugin with slice-aware playback and correct timing."
-            VALUE "LegalCopyright",   "Copyright (c) 2025"
+            VALUE "LegalCopyright",   "Copyright (c) 2026"
         END
     END
     BLOCK "VarFileInfo"

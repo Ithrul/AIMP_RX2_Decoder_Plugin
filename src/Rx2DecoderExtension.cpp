@@ -6,7 +6,6 @@
 #include <cstring>
 #include <wchar.h>
 #include <vector>
-#include <string>
 
 // Forward declaration so SetErrorInfoFromRexError can call it.
 static const wchar_t* GetRexErrorMessageShort(REX::REXError err,
@@ -36,24 +35,6 @@ static void SetErrorInfoFromRexError(IAIMPCore* core,
     }
 }
 
-// Helper to fill IAIMPErrorInfo with a custom text message.
-static void SetErrorInfoText(IAIMPCore* core,
-                             IAIMPErrorInfo* errorInfo,
-                             const std::wstring& msg)
-{
-    if (!errorInfo || !core || msg.empty())
-        return;
-
-    IAIMPString* s = nullptr;
-    if (SUCCEEDED(core->CreateObject(IID_IAIMPString, (void**)&s)))
-    {
-        s->SetData(const_cast<wchar_t*>(msg.c_str()),
-                   static_cast<int>(msg.length()));
-        errorInfo->SetInfo(0, s, nullptr);
-        s->Release();
-    }
-}
-
 Rx2DecoderExtension::Rx2DecoderExtension(IAIMPCore* core)
     : m_refCount(1)
     , m_core(core)
@@ -73,7 +54,8 @@ static const wchar_t* GetRexErrorMessageShort(REX::REXError err,
                                               wchar_t* buf,
                                               size_t bufSize)
 {
-    switch (err)
+    const int errVal = static_cast<int>(err);
+    switch (errVal)
     {
     case REX::kREXError_FileCorrupt:
         return L"The format of this file is unknown or the file is corrupt.";
@@ -188,9 +170,7 @@ ULONG WINAPI Rx2DecoderExtension::Release()
 
 // Quick preflight to reject obvious non-REX data (e.g., WAV) before building a
 // decoder. Returns true only if the stream looks like a valid REX file.
-static bool PreflightStream(IAIMPCore* core,
-                            IAIMPStream* stream,
-                            IAIMPErrorInfo* errorInfo,
+static bool PreflightStream(IAIMPStream* stream,
                             REX::REXError& outErr)
 {
     outErr = REX::kREXError_NoError;
@@ -352,7 +332,7 @@ HRESULT WINAPI Rx2DecoderExtension::CreateDecoder(IAIMPStream* Stream,
 
     // Preflight before constructing decoder to block obvious non-REX files.
     REX::REXError preErr = REX::kREXError_NoError;
-    if (!PreflightStream(m_core, Stream, ErrorInfo, preErr))
+    if (!PreflightStream(Stream, preErr))
     {
         if (preErr != REX::kREXError_NoError)
         {

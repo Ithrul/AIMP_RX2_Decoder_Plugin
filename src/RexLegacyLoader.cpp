@@ -1,18 +1,25 @@
 #include <windows.h>
 #include <string>
+#include <algorithm>
 
 #include "RexSdk.h"
 
-// Minimal dynamic loader for 32-bit builds that accepts the legacy REX Shared Library 1.6.
-// We bypass the SDK's 1.7+ version gate but still resolve all required exports.
+// Dynamic loader for "REX Shared Library.dll" shipped locally with the plugin.
+// For x86 we ship the last supported Windows 32-bit DLL from Reason SDK 1.8.1.
+// The loader only loads from a caller-provided local folder and refuses Windows/System32 paths.
+
 
 namespace REX {
 
 namespace {
 
-// Exported function names in the 1.6 DLL
+// Exported function names used by the REX DLL.
+// Legacy DLLs expose Open/Close; newer DLLs expose REXInitializeDLL/REXUninitializeDLL.
+
 constexpr char kProcOpen[]                = "Open";
 constexpr char kProcClose[]               = "Close";
+constexpr char kProcREXInitializeDLL[]    = "REXInitializeDLL";
+constexpr char kProcREXUninitializeDLL[]  = "REXUninitializeDLL";
 constexpr char kProcREXCreate[]           = "REXCreate";
 constexpr char kProcREXDelete[]           = "REXDelete";
 constexpr char kProcREXGetInfo[]          = "REXGetInfo";
@@ -27,6 +34,88 @@ constexpr char kProcREXRenderPreviewBatch[] = "REXRenderPreviewBatch";
 constexpr char kProcREXSetPreviewTempo[]  = "REXSetPreviewTempo";
 
 HMODULE g_dll = nullptr;
+
+// --- Loader hardening -------------------------------------------------------
+// We only load "REX Shared Library.dll" from a caller-provided local folder.
+// We do NOT rely on Windows DLL search order (System32/PATH/etc.). We also
+// explicitly refuse Windows/System32 locations to prevent accidental pickup.
+
+static std::wstring NormalizePath(const std::wstring& in)
+{
+    wchar_t full[MAX_PATH] = {0};
+    if (GetFullPathNameW(in.c_str(), MAX_PATH, full, nullptr) == 0)
+        return in;
+
+    std::wstring out(full);
+    std::replace(out.begin(), out.end(), L'/', L'\\');
+    while (out.size() > 3 && out.back() == L'\\')
+        out.pop_back();
+    return out;
+}
+
+static bool StartsWithI(const std::wstring& s, const std::wstring& prefix)
+{
+    if (prefix.empty() || s.size() < prefix.size())
+        return false;
+    return _wcsnicmp(s.c_str(), prefix.c_str(), prefix.size()) == 0;
+}
+
+static bool IsForbiddenSystemLocation(const std::wstring& fullDllPath)
+{
+    wchar_t sysDir[MAX_PATH] = {0};
+    wchar_t winDir[MAX_PATH] = {0};
+    GetSystemDirectoryW(sysDir, MAX_PATH);
+    GetWindowsDirectoryW(winDir, MAX_PATH);
+
+    std::wstring dll = NormalizePath(fullDllPath);
+    std::wstring sys = NormalizePath(sysDir);
+    std::wstring win = NormalizePath(winDir);
+
+    if (!sys.empty() && sys.back() != L'\\') sys.push_back(L'\\');
+    if (!win.empty() && win.back() != L'\\') win.push_back(L'\\');
+
+    return StartsWithI(dll, sys) || StartsWithI(dll, win);
+}
+
+static bool VerifyLoadedFromExpectedPath(HMODULE module, const std::wstring& expectedFullPath)
+{
+    wchar_t loadedPath[MAX_PATH] = {0};
+    if (!module || GetModuleFileNameW(module, loadedPath, MAX_PATH) == 0)
+        return false;
+
+    const std::wstring a = NormalizePath(loadedPath);
+    const std::wstring b = NormalizePath(expectedFullPath);
+    return _wcsicmp(a.c_str(), b.c_str()) == 0;
+}
+
+static bool GetModuleDirectoryFromAddress(const void* addr, std::wstring& outDir)
+{
+    if (!addr)
+        return false;
+
+    HMODULE module = nullptr;
+    if (!GetModuleHandleExW(
+            GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+            GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            reinterpret_cast<LPCWSTR>(addr),
+            &module))
+    {
+        return false;
+    }
+
+    wchar_t modulePath[MAX_PATH] = {0};
+    if (GetModuleFileNameW(module, modulePath, MAX_PATH) == 0)
+        return false;
+
+    std::wstring path(modulePath);
+    const size_t slash = path.find_last_of(L"\\/");
+    if (slash == std::wstring::npos)
+        return false;
+
+    path.erase(slash);
+    outDir = path;
+    return true;
+}
 
 typedef char (REXCALL *TDLLOpenProc)(void);
 typedef void (REXCALL *TDLLCloseProc)(void);
@@ -62,8 +151,17 @@ TREXSetPreviewTempoProc     g_rexSetPreviewTempo  = nullptr;
 
 bool LoadExports()
 {
-    g_open               = reinterpret_cast<TDLLOpenProc>(GetProcAddress(g_dll, kProcOpen));
-    g_close              = reinterpret_cast<TDLLCloseProc>(GetProcAddress(g_dll, kProcClose));
+    g_open = reinterpret_cast<TDLLOpenProc>(GetProcAddress(g_dll, kProcREXInitializeDLL));
+    if (!g_open)
+    {
+        g_open = reinterpret_cast<TDLLOpenProc>(GetProcAddress(g_dll, kProcOpen));
+    }
+
+    g_close = reinterpret_cast<TDLLCloseProc>(GetProcAddress(g_dll, kProcREXUninitializeDLL));
+    if (!g_close)
+    {
+        g_close = reinterpret_cast<TDLLCloseProc>(GetProcAddress(g_dll, kProcClose));
+    }
     g_rexCreate          = reinterpret_cast<TREXCreateProc>(GetProcAddress(g_dll, kProcREXCreate));
     g_rexDelete          = reinterpret_cast<TREXDeleteProc>(GetProcAddress(g_dll, kProcREXDelete));
     g_rexGetInfo         = reinterpret_cast<TREXGetInfoProc>(GetProcAddress(g_dll, kProcREXGetInfo));
@@ -113,17 +211,51 @@ REXError REXInitializeDLL_DirPath(const wchar_t* iDirPath)
     if (IsLoaded())
         return kREXImplError_DLLAlreadyLoaded;
 
-    if (!iDirPath || iDirPath[0] == L'\0')
+    std::wstring pluginDir;
+    if (!GetModuleDirectoryFromAddress(reinterpret_cast<const void*>(&GetModuleDirectoryFromAddress), pluginDir))
         return kREXError_DLLNotFound;
 
-    std::wstring path(iDirPath);
+    const std::wstring baseDir = NormalizePath(pluginDir);
+    if (baseDir.empty())
+        return kREXError_DLLNotFound;
+
+    if (iDirPath && iDirPath[0] != L'\0')
+    {
+        const std::wstring requested = NormalizePath(iDirPath);
+        if (_wcsicmp(requested.c_str(), baseDir.c_str()) != 0)
+            return kREXError_DLLNotFound;
+    }
+
+    std::wstring path(baseDir);
     if (!path.empty() && path.back() != L'\\' && path.back() != L'/')
         path.append(L"\\");
     path.append(L"REX Shared Library.dll");
 
-    g_dll = LoadLibraryW(path.c_str());
+    // Always load by absolute path to avoid Windows search order.
+    const std::wstring fullPath = NormalizePath(path);
+
+    // Refuse to load from Windows directories (System32/Windows), even if requested.
+    if (IsForbiddenSystemLocation(fullPath))
+        return kREXError_DLLNotFound;
+
+    // Ensure the file exists at the expected location before loading.
+    const DWORD attrs = GetFileAttributesW(fullPath.c_str());
+    if (attrs == INVALID_FILE_ATTRIBUTES || (attrs & FILE_ATTRIBUTE_DIRECTORY))
+        return kREXError_DLLNotFound;
+
+    // Load by exact absolute path. Altered search path prioritizes the DLL folder for its dependencies.
+    g_dll = LoadLibraryExW(fullPath.c_str(), nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
     if (!g_dll)
     {
+        ResetState();
+        return kREXError_DLLNotFound;
+    }
+
+    // Verify we loaded exactly the DLL we requested.
+    if (!VerifyLoadedFromExpectedPath(g_dll, fullPath))
+    {
+        FreeLibrary(g_dll);
+        g_dll = nullptr;
         ResetState();
         return kREXError_DLLNotFound;
     }
@@ -143,6 +275,11 @@ REXError REXInitializeDLL_DirPath(const wchar_t* iDirPath)
     }
 
     return kREXError_NoError;
+}
+
+REXError REXInitializeDLL_PluginDir()
+{
+    return REXInitializeDLL_DirPath(nullptr);
 }
 
 void REXUninitializeDLL(void)

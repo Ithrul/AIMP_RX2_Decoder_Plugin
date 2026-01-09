@@ -14,6 +14,15 @@ rem Normalize slashes to backslashes so copy works with CMake-style paths
 set "BUILD_DLL=%BUILD_DLL:/=\%"
 set "AIMP_ROOT=%AIMP_ROOT:/=\%"
 
+rem If CMake omits an empty AIMP_ROOT arg, %2 becomes the arch.
+if /I "%AIMP_ROOT%"=="x86" (
+    set "ARCH=x86"
+    set "AIMP_ROOT="
+) else if /I "%AIMP_ROOT%"=="x64" (
+    set "ARCH=x64"
+    set "AIMP_ROOT="
+)
+
 if "%ARCH%"=="" set "ARCH=x64"
 
 if "%AIMP_ROOT%"=="" (
@@ -27,6 +36,12 @@ if "%AIMP_ROOT%"=="" (
 set "AIMP_EXE=%AIMP_ROOT%\AIMP.exe"
 set "AIMP_PLUGIN_DIR=%AIMP_ROOT%\Plugins\aimp_rx2_plugin"
 set "AIMP_PLUGIN_DLL=%AIMP_PLUGIN_DIR%\aimp_rx2_plugin.dll"
+set "BUILD_DIR=%~dp1"
+set "BUILD_REX_DLL=%BUILD_DIR%REX Shared Library.dll"
+
+if not exist "%BUILD_REX_DLL%" (
+    set "BUILD_REX_DLL=%BUILD_DIR%Rex Shared Library.dll"
+)
 
 if not exist "%BUILD_DLL%" (
     echo [AIMP RX2] ERROR: built dll not found: %BUILD_DLL%
@@ -45,6 +60,11 @@ taskkill /IM AIMP.exe /F >nul 2>&1
 
 echo [AIMP RX2] Copying "%BUILD_DLL%" to "%AIMP_PLUGIN_DLL%" ...
 copy /Y "%BUILD_DLL%" "%AIMP_PLUGIN_DLL%" >nul
+
+if exist "%BUILD_REX_DLL%" (
+    echo [AIMP RX2] Copying "%BUILD_REX_DLL%" to "%AIMP_PLUGIN_DIR%\REX Shared Library.dll" ...
+    copy /Y "%BUILD_REX_DLL%" "%AIMP_PLUGIN_DIR%\REX Shared Library.dll" >nul
+)
 
 echo [AIMP RX2] Starting AIMP...
 start "" "%AIMP_EXE%"

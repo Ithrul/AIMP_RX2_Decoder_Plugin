@@ -11,3 +11,9 @@
 #endif
 
 #include "REX.h"
+
+#ifdef __cplusplus
+namespace REX {
+    REXError REXInitializeDLL_PluginDir();
+}
+#endif

@@ -1,6 +1,4 @@
 #include <windows.h>
-#include <shlwapi.h>
-
 #include "apiPlugin.h"
 #include "apiCore.h"
 #include "apiFileManager.h"
@@ -9,14 +7,17 @@
 #include "Rx2DecoderExtension.h"
 #include "Rx2FileFormatExtension.h"
 
-#pragma comment(lib, "Shlwapi.lib")
-
 #ifndef AIMP_PLUGIN_INFO_VERSION
 #define AIMP_PLUGIN_INFO_VERSION 0x4
 #endif
 
+#if defined(_WIN32) && defined(_M_IX86)
+// Export an undecorated name for x86; AIMP looks up "AIMPPluginGetHeader" by name.
+#pragma comment(linker, "/EXPORT:AIMPPluginGetHeader=_AIMPPluginGetHeader@4")
+#endif
+
 // Forward declaration so we can use its address in GetModuleHandleExW
-extern "C" HRESULT __declspec(dllexport) WINAPI AIMPPluginGetHeader(void **plugin);
+extern "C" HRESULT __declspec(dllexport) WINAPI AIMPPluginGetHeader(IAIMPPlugin **plugin);
 
 class Rx2Plugin : public IAIMPPlugin
 {
@@ -97,7 +98,7 @@ TChar* WINAPI Rx2Plugin::InfoGet(int index)
     static TChar author[]    = L"Ivan Smirnoff";
     static TChar shortDesc[] = L"Adds support for REX / RX2 loop files.";
     static TChar fullDesc[]  = L"REX-family input plugin for AIMP with slice-aware playback and correct musical timing.\n\nCapabilities:\n- RX2 / REX / RCY support\n- Slice-aware playback (muted/locked/timed slices)\n- BPM, time signature and bar-length handling\n- Musical-length-based looping\n- Reliable seeking and preview\n- Reads available metadata (tempo/structure/creator)\n- Proper handling of invalid files";
-    static TChar version[]   = L"0.9.6";
+    static TChar version[]   = L"0.9.7";
     
 
     switch (index)
@@ -122,45 +123,14 @@ HRESULT WINAPI Rx2Plugin::Initialize(IAIMPCore *core)
     if (m_core)
         m_core->AddRef();
 
-    // --- 1) Initialize REX DLL (plugin folder first, then AIMP.exe folder) ---
+    // --- 1) Initialize REX DLL (plugin folder only) ---
 
     if (!m_rexInitialized)
     {
-        wchar_t dir[MAX_PATH] = {0};
-
-        // Plugin DLL folder
-        HMODULE hModule = nullptr;
-        if (GetModuleHandleExW(
-                GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
-                GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                reinterpret_cast<LPCWSTR>(&AIMPPluginGetHeader),
-                &hModule))
+        REX::REXError err = REX::REXInitializeDLL_PluginDir();
+        if (err == REX::kREXError_NoError)
         {
-            if (GetModuleFileNameW(hModule, dir, MAX_PATH) > 0)
-            {
-                PathRemoveFileSpecW(dir);
-
-                REX::REXError err = REX::REXInitializeDLL_DirPath(dir);
-                if (err == REX::kREXError_NoError)
-                {
-                    m_rexInitialized = true;
-                }
-            }
-        }
-
-        // AIMP.exe folder (fallback)
-        if (!m_rexInitialized)
-        {
-            if (GetModuleFileNameW(nullptr, dir, MAX_PATH) > 0)
-            {
-                PathRemoveFileSpecW(dir);
-
-                REX::REXError err = REX::REXInitializeDLL_DirPath(dir);
-                if (err == REX::kREXError_NoError)
-                {
-                    m_rexInitialized = true;
-                }
-            }
+            m_rexInitialized = true;
         }
     }
 
@@ -229,7 +199,7 @@ void WINAPI Rx2Plugin::SystemNotification(int /*NotifyID*/, IUnknown* /*Data*/)
 
 // Export
 
-extern "C" HRESULT __declspec(dllexport) WINAPI AIMPPluginGetHeader(void **plugin)
+extern "C" HRESULT __declspec(dllexport) WINAPI AIMPPluginGetHeader(IAIMPPlugin **plugin)
 {
     if (!plugin)
     {
